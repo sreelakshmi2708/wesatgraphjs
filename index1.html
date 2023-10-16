@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Variables Display and Graph</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div>
+        <p>Variable 1: <span id="variable1">Loading...</span></p>
+        <p>Variable 2: <span id="variable2">Loading...</span></p>
+    </div>
+    <div id="graph"></div>
+
+    <script>
+        // Initialize variables and timestamps
+        let variable1Data = [];
+        let variable2Data = [];
+        let timestamps = [];
+
+        // Create a Plotly graph
+        const layout = {
+            title: 'Random Variable Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Value',
+                range: [0, 100],
+            },
+        };
+
+        const trace1 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Variable 1',
+            line: { color: 'rgb(75, 192, 192)' },
+        };
+
+        const trace2 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Variable 2',
+            line: { color: 'rgb(192, 75, 75)' },
+        };
+
+        const data = [trace1, trace2];
+
+        Plotly.newPlot('graph', data, layout);
+
+        // Function to format a timestamp to HH:MM:SS
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toTimeString().split(' ')[0]; // Extract HH:MM:SS
+        }
+
+        // Function to generate random floating-point numbers between 0 and 100
+        function generateRandomValue() {
+            return Math.random() * 100;
+        }
+
+        // Function to update the variables and graph
+        function updateVariablesAndGraph() {
+            var variable1Element = document.getElementById("variable1");
+            var variable2Element = document.getElementById("variable2");
+
+            // Generate random variables
+            var variable1 = generateRandomValue();
+            var variable2 = generateRandomValue();
+
+            // Display the updated variables
+            variable1Element.textContent = variable1.toFixed(2);
+            variable2Element.textContent = variable2.toFixed(2);
+
+            // Get the current timestamp
+            const now = new Date();
+            const timestamp = formatTimestamp(now);
+
+            // Add data to variables and timestamps
+            variable1Data.push(variable1);
+            variable2Data.push(variable2);
+            timestamps.push(timestamp);
+
+            // Update the Plotly graph data
+            trace1.x = timestamps;
+            trace1.y = variable1Data;
+            trace2.x = timestamps;
+            trace2.y = variable2Data;
+
+            // Update the graph
+            Plotly.update('graph', data, layout);
+
+            // Set the interval to update the variables and graph every 5 seconds
+            setTimeout(updateVariablesAndGraph, 5000);
+        }
+
+        // Initial call to start the process
+        updateVariablesAndGraph();
+    </script>
+</body>
+</html>

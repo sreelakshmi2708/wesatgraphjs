@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Variables Display and Graph</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <div>
+        <p>Variable 1: <span id="variable1">Loading...</span></p>
+        <p>Variable 2: <span id="variable2">Loading...</span></p>
+    </div>
+    <div id="graph"></div>
+    <div id="averageGraph"></div>
+
+    <script>
+        // Initialize variables and timestamps
+        let variable1Data = [];
+        let variable2Data = [];
+        let timestamps = [];
+        let average1Data = [];
+        let average2Data = [];
+
+        // Create a Plotly graph for the variables
+        const layout = {
+            title: 'Random Variable Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Value',
+                range: [0, 100],
+            },
+        };
+
+        const trace1 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Variable 1',
+            line: { color: 'rgb(75, 192, 192)' },
+        };
+
+        const trace2 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Variable 2',
+            line: { color: 'rgb(192, 75, 75)' },
+        };
+
+        const data = [trace1, trace2];
+
+        Plotly.newPlot('graph', data, layout);
+
+        // Create a Plotly graph for the averages
+        const averageLayout = {
+            title: '5-Minute Averages',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Average Value',
+                range: [0, 100],
+            },
+        };
+
+        const averageTrace1 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Average Variable 1',
+            line: { color: 'rgb(75, 192, 192)' },
+        };
+
+        const averageTrace2 = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Average Variable 2',
+            line: { color: 'rgb(192, 75, 75)' },
+        };
+
+        const averageData = [averageTrace1, averageTrace2];
+
+        Plotly.newPlot('averageGraph', averageData, averageLayout);
+
+        // Function to format a timestamp to HH:MM:SS
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            return date.toTimeString().split(' ')[0]; // Extract HH:MM:SS
+        }
+
+        // Function to generate random floating-point numbers between 0 and 100
+        function generateRandomValue() {
+            return Math.random() * 100;
+        }
+
+        // Function to update the variables and graphs
+        function updateVariablesAndGraph() {
+            var variable1Element = document.getElementById("variable1");
+            var variable2Element = document.getElementById("variable2");
+
+            // Generate random variables
+            var variable1 = generateRandomValue();
+            var variable2 = generateRandomValue();
+
+            // Display the updated variables
+            variable1Element.textContent = variable1.toFixed(2);
+            variable2Element.textContent = variable2.toFixed(2);
+
+            // Get the current timestamp
+            const now = new Date();
+            const timestamp = formatTimestamp(now);
+
+            // Add data to variables and timestamps
+            variable1Data.push(variable1);
+            variable2Data.push(variable2);
+            timestamps.push(timestamp);
+
+            // Calculate the average over a 5-minute window
+            const fiveMinAgo = now - 5 * 60 * 1000; // 5 minutes in milliseconds
+            let total1 = 0;
+            let total2 = 0;
+            let count = 0;
+            for (let i = timestamps.length - 1; i >= 0; i--) {
+                if (new Date(timestamps[i]) < fiveMinAgo) {
+                    break;
+                }
+                total1 += variable1Data[i];
+                total2 += variable2Data[i];
+                count++;
+            }
+            const average1 = total1 / count;
+            const average2 = total2 / count;
+
+            // Update the Plotly graph data
+            trace1.x = timestamps;
+            trace1.y = variable1Data;
+            trace2.x = timestamps;
+            trace2.y = variable2Data;
+
+            averageTrace1.x.push(timestamp);
+            averageTrace2.x.push(timestamp);
+            averageTrace1.y.push(average1);
+            averageTrace2.y.push(average2);
+
+            // Update the graphs
+            Plotly.update('graph', data, layout);
+            Plotly.update('averageGraph', averageData, averageLayout);
+
+            // Set the interval to update the variables every 5 seconds
+            setTimeout(updateVariablesAndGraph, 5000);
+
+            // Update the average graph every 5 minutes
+            if (new Date() - new Date(averageTrace1.x[averageTrace1.x.length - 1]) >= 5 * 60 * 1000) {
+                updateAverageGraph();
+            }
+        }
+
+        // Function to update the average graph
+        function updateAverageGraph() {
+            averageTrace1.x = [];
+            averageTrace1.y = [];
+            averageTrace2.x = [];
+            averageTrace2.y = [];
+        }
+
+        // Initial call to start the process
+        updateVariablesAndGraph();
+    </script>
+</body>
+</html>
