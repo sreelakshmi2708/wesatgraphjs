@@ -1,54 +1,157 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Random Variables Display and Graph</title>
+    <title>Sensor Data Display and Graph</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
     <div>
-        <p>Variable 1: <span id="variable1">Loading...</span></p>
-        <p>Variable 2: <span id="variable2">Loading...</span></p>
+        <p>Sun Intensity: <span id="sunIntensity">Loading...</span></p>
+        <p>UV Intensity: <span id="uvIntensity">Loading...</span></p>
+        <p>UV Index: <span id="uvIndex">Loading...</span></p>
+        <p>Temperature: <span id="temperature">Loading...</span></p>
+        <p>Humidity: <span id="humidity">Loading...</span></p>
     </div>
-    <div id="graph"></div>
+    
+    <div id="graphSunIntensity"></div>
+    <div id="graphUVIntensity"></div>
+    <div id="graphUVIndex"></div>
+    <div id="graphTemperature"></div>
+    <div id="graphHumidity"></div>
 
     <script>
         // Initialize variables and timestamps
-        let variable1Data = [];
-        let variable2Data = [];
+        let sunIntensityData = [];
+        let uvIntensityData = [];
+        let uvIndexData = [];
+        let temperatureData = [];
+        let humidityData = [];
         let timestamps = [];
 
-        // Create a Plotly graph
-        const layout = {
-            title: 'Random Variable Graph',
+        // Create a Plotly graph for Sun Intensity
+        const layoutSunIntensity = {
+            title: 'Sun Intensity Graph',
             xaxis: {
                 title: 'Timestamp',
                 type: 'category',
             },
             yaxis: {
-                title: 'Value',
+                title: 'Intensity',
                 range: [0, 100],
             },
         };
 
-        const trace1 = {
+        const traceSunIntensity = {
             x: [],
             y: [],
             mode: 'lines',
-            name: 'Variable 1',
+            name: 'Sun Intensity',
+            line: { color: 'rgb(255, 165, 0)' },
+        };
+
+        const dataSunIntensity = [traceSunIntensity];
+
+        Plotly.newPlot('graphSunIntensity', dataSunIntensity, layoutSunIntensity);
+
+        // Create a Plotly graph for UV Intensity
+        const layoutUVIntensity = {
+            title: 'UV Intensity Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Intensity',
+                range: [0, 100],
+            },
+        };
+
+        const traceUVIntensity = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'UV Intensity',
+            line: { color: 'rgb(255, 0, 0)' },
+        };
+
+        const dataUVIntensity = [traceUVIntensity];
+
+        Plotly.newPlot('graphUVIntensity', dataUVIntensity, layoutUVIntensity);
+
+        // Create a Plotly graph for UV Index
+        const layoutUVIndex = {
+            title: 'UV Index Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Index',
+                range: [0, 10],
+            },
+        };
+
+        const traceUVIndex = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'UV Index',
             line: { color: 'rgb(75, 192, 192)' },
         };
 
-        const trace2 = {
+        const dataUVIndex = [traceUVIndex];
+
+        Plotly.newPlot('graphUVIndex', dataUVIndex, layoutUVIndex);
+
+        // Create a Plotly graph for Temperature
+        const layoutTemperature = {
+            title: 'Temperature Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Temperature (°C)',
+                range: [0, 100],
+            },
+        };
+
+        const traceTemperature = {
             x: [],
             y: [],
             mode: 'lines',
-            name: 'Variable 2',
-            line: { color: 'rgb(192, 75, 75)' },
+            name: 'Temperature',
+            line: { color: 'rgb(255, 0, 255)' },
         };
 
-        const data = [trace1, trace2];
+        const dataTemperature = [traceTemperature];
 
-        Plotly.newPlot('graph', data, layout);
+        Plotly.newPlot('graphTemperature', dataTemperature, layoutTemperature);
+
+        // Create a Plotly graph for Humidity
+        const layoutHumidity = {
+            title: 'Humidity Graph',
+            xaxis: {
+                title: 'Timestamp',
+                type: 'category',
+            },
+            yaxis: {
+                title: 'Humidity (%)',
+                range: [0, 100],
+            },
+        };
+
+        const traceHumidity = {
+            x: [],
+            y: [],
+            mode: 'lines',
+            name: 'Humidity',
+            line: { color: 'rgb(0, 0, 255)' },
+        };
+
+        const dataHumidity = [traceHumidity];
+
+        Plotly.newPlot('graphHumidity', dataHumidity, layoutHumidity);
 
         // Function to format a timestamp to HH:MM:SS
         function formatTimestamp(timestamp) {
@@ -61,38 +164,60 @@
             return Math.random() * 100;
         }
 
-        // Function to update the variables and graph
+        // Function to update the variables and graphs
         function updateVariablesAndGraph() {
-            var variable1Element = document.getElementById("variable1");
-            var variable2Element = document.getElementById("variable2");
+            var sunIntensityElement = document.getElementById("sunIntensity");
+            var uvIntensityElement = document.getElementById("uvIntensity");
+            var uvIndexElement = document.getElementById("uvIndex");
+            var temperatureElement = document.getElementById("temperature");
+            var humidityElement = document.getElementById("humidity");
 
             // Generate random variables
-            var variable1 = generateRandomValue();
-            var variable2 = generateRandomValue();
+            var sunIntensity = generateRandomValue();
+            var uvIntensity = generateRandomValue();
+            var uvIndex = Math.floor(Math.random() * 11); // Random integer between 0 and 10
+            var temperature = generateRandomValue();
+            var humidity = generateRandomValue();
 
             // Display the updated variables
-            variable1Element.textContent = variable1.toFixed(2);
-            variable2Element.textContent = variable2.toFixed(2);
+            sunIntensityElement.textContent = sunIntensity.toFixed(2);
+            uvIntensityElement.textContent = uvIntensity.toFixed(2);
+            uvIndexElement.textContent = uvIndex;
+            temperatureElement.textContent = temperature.toFixed(2);
+            humidityElement.textContent = humidity.toFixed(2);
 
             // Get the current timestamp
             const now = new Date();
             const timestamp = formatTimestamp(now);
 
             // Add data to variables and timestamps
-            variable1Data.push(variable1);
-            variable2Data.push(variable2);
+            sunIntensityData.push(sunIntensity);
+            uvIntensityData.push(uvIntensity);
+            uvIndexData.push(uvIndex);
+            temperatureData.push(temperature);
+            humidityData.push(humidity);
             timestamps.push(timestamp);
 
             // Update the Plotly graph data
-            trace1.x = timestamps;
-            trace1.y = variable1Data;
-            trace2.x = timestamps;
-            trace2.y = variable2Data;
+            traceSunIntensity.x = timestamps;
+            traceSunIntensity.y = sunIntensityData;
+            traceUVIntensity.x = timestamps;
+            traceUVIntensity.y = uvIntensityData;
+            traceUVIndex.x = timestamps;
+            traceUVIndex.y = uvIndexData;
+            traceTemperature.x = timestamps;
+            traceTemperature.y = temperatureData;
+            traceHumidity.x = timestamps;
+            traceHumidity.y = humidityData;
 
-            // Update the graph
-            Plotly.update('graph', data, layout);
+            // Update the graphs
+            Plotly.update('graphSunIntensity', dataSunIntensity, layoutSunIntensity);
+            Plotly.update('graphUVIntensity', dataUVIntensity, layoutUVIntensity);
+            Plotly.update('graphUVIndex', dataUVIndex, layoutUVIndex);
+            Plotly.update('graphTemperature', dataTemperature, layoutTemperature);
+            Plotly.update('graphHumidity', dataHumidity, layoutHumidity);
 
-            // Set the interval to update the variables and graph every 5 seconds
+            // Set the interval to update the variables every 5 seconds
             setTimeout(updateVariablesAndGraph, 5000);
         }
 
